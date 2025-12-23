@@ -1,35 +1,63 @@
 from django.db import models
-from users.models import User
+from django.contrib.auth.models import User
 # Create your models here.
 
 class Recipe (models.Model):
-    title=models.CharField(max_length=300)
     spoonacular_id=models.IntegerField(unique=True,null=True)
+
+    title=models.CharField(max_length=300)
 
     calories=models.DecimalField(max_digits=6,decimal_places=2)
     protein=models.DecimalField(max_digits=5,decimal_places=2)
     carbohydrates=models.DecimalField(max_digits=5,decimal_places=2)
     fat=models.DecimalField(max_digits=5,decimal_places=2)
 
-    instructions=models.TextField(blank=True,max_length=500)
+    instructions=models.TextField(blank=True)
     image_url=models.URLField()
 
-    serving=models.IntegerField()
+    servings=models.IntegerField()
     is_vegetarian=models.BooleanField(default=False)
     is_vegan=models.BooleanField(default=False)
     is_gluten_free=models.BooleanField(default=False)
     is_custom=models.BooleanField(default=False)
     created_by=models.ForeignKey(User,null=True,on_delete=models.SET_NULL)
-    created_at=models.DateTimeField()
+    created_at=models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
 
 class Ingredient (models.Model):
-    recipe=models.ForeignKey(Recipe,null=True,blank=True,on_delete=models.CASCADE,related_name='ingredients')
+    recipe=models.ForeignKey(Recipe,on_delete=models.CASCADE,related_name='ingredients')
 
     title = models.CharField(max_length=200)
-    calories = models.DecimalField(max_digits=5,decimal_places=2)
-    protein = models.DecimalField(max_digits=5,decimal_places=2)
-    carbohydrates = models.DecimalField(max_digits=5,decimal_places=2)
-    fat = models.DecimalField(max_digits=5,decimal_places=2)
 
     amount=models.DecimalField(max_digits=5,decimal_places=2)
     unit=models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.title
+
+class MealType(models.TextChoices):
+    BREAKFAST='breakfast'
+    LUNCH='lunch'
+    DINNER='dinner'
+    SNACK='snack'
+    SUPPER='supper'
+
+
+class FoodLog(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='logs')
+
+    date=models.DateTimeField(auto_now_add=True)
+    meal_type=models.CharField(max_length=20,choices=MealType.choices)
+
+    recipe=models.ForeignKey(Recipe,blank=True,null=True,on_delete=models.CASCADE)
+
+    custom_title = models.CharField(blank=True,null=True,max_length=300)
+
+    custom_calories = models.DecimalField(blank=True,null=True,max_digits=6, decimal_places=2)
+    custom_protein = models.DecimalField(blank=True,null=True,max_digits=5, decimal_places=2)
+    custom_carbohydrates = models.DecimalField(blank=True,null=True,max_digits=5, decimal_places=2)
+    custom_fat = models.DecimalField(blank=True,null=True,max_digits=5, decimal_places=2)
+
+    servings = models.IntegerField()
