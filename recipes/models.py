@@ -61,3 +61,9 @@ class FoodLog(models.Model):
     custom_fat = models.DecimalField(blank=True,null=True,max_digits=5, decimal_places=2)
 
     servings = models.IntegerField()
+
+    def __str__(self):
+        if self.custom_title is None:
+            return f"{self.user.__str__()} {self.date} {self.recipe.title}"
+        else:
+            return f"{self.user.__str__()} {self.date} {self.custom_title}"
