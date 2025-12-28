@@ -36,13 +36,14 @@ def get_day_macros(user:User,date) -> dict:
         'carbohydrates': sum(get_entry_macros(log)['carbohydrates'] for log in food_logs)
     }
 
-def get_certain_food_log(user:User, date, meal_type:FoodLog.meal_type):
-    food_logs=FoodLog.objects.filter(user=user,date__date=date,meal_type=meal_type).select_related('recipe')
+def get_certain_food_log(user:User, date):
+    food_logs=FoodLog.objects.filter(user=user,date__date=date).select_related('recipe')
+
     return [
         {
-            'id':log.id,
             'recipe_title':val(log.custom_title,log.recipe.title),
             'serving':log.servings,
+            'meal_type':log.meal_type.capitalize(),
             'macroelement':get_entry_macros(log),
         }
         for log in food_logs
