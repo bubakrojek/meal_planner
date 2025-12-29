@@ -4,9 +4,10 @@ from django.dispatch import receiver
 
 from users.models import UserProfile
 
-
+'''
 @receiver(post_save,sender=User)
 def update_user_profile(sender,instance,created,**kwargs):
     if created:
         UserProfile.objects.create(user=instance)
         instance.profile.save()
+'''

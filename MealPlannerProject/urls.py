@@ -17,12 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from recipes.views import certain_food_log
-from users.views import  show_my_profile
+from users.views import  show_my_profile, register, sign_in, logout_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', certain_food_log, name='food_logs'),
     path('food_logs/',certain_food_log, name='food_logs'),
     path('profile/', show_my_profile, name='show_my_profile'),
-    #path("accounts/", include("django.contrib.auth.urls")),
+    path('register/', register, name='register'),
+    path('sign_in/',sign_in, name='sign_in'),
+    path('logout/',logout_view,name='logout')
 ]
