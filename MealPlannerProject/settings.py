@@ -71,6 +71,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'MealPlannerProject.wsgi.application'
 
+LOGIN_URL = '/sign_in/'
+LOGIN_REDIRECT_URL = '/food_logs/'
+LOGOUT_REDIRECT_URL = '/sign_in/'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
