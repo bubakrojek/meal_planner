@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from recipes.views import certain_food_log
-from users.views import  show_my_profile, register, sign_in, logout_view
+from users.views import show_my_profile, register, sign_in, logout_view, complete_profile
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,5 +26,6 @@ urlpatterns = [
     path('profile/', show_my_profile, name='show_my_profile'),
     path('register/', register, name='register'),
     path('sign_in/',sign_in, name='sign_in'),
-    path('logout/',logout_view,name='logout')
+    path('logout/',logout_view,name='logout'),
+    path('complete_profile/',complete_profile,name='complete_profile')
 ]
