@@ -13,7 +13,7 @@ class DietaryPreferences(models.Model):
     is_vegan=models.BooleanField(default=False)
     is_vegetarian=models.BooleanField(default=False)
     is_gluten_free=models.BooleanField(default=False)
-    is_diary_free=models.BooleanField(default=False)
+    is_dairy_free=models.BooleanField(default=False)
     is_keto=models.BooleanField(default=False)
 
     #TODO excluded ingredients

@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -5,7 +7,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect
 
-from users.forms import SingUpForm, CompleteProfileForm
+from users.forms import SingUpForm, CompleteProfileForm, CompleteDietaryPreferences
 from users.models import UserProfile, DietaryPreferences
 
 
@@ -38,6 +40,8 @@ def show_my_profile(request: HttpRequest) -> HttpResponse:
 
 
 def sign_in(request: HttpRequest) -> HttpResponse:
+
+
     if request.user.is_authenticated:
         return redirect('food_logs')
     if request.method == 'POST':
@@ -51,6 +55,9 @@ def sign_in(request: HttpRequest) -> HttpResponse:
 
             login(request, user)
             messages.success(request,f'Welcome back, {user.get_username()}.')
+            if not hasattr(request.user, 'profile'):
+                messages.info(request, 'You need to complete your profile.')
+                return redirect('/complete_profile/')
             return redirect('/food_logs/')
         else:
             messages.info(request, 'Username or password is invalid.')
@@ -84,6 +91,14 @@ def register(request: HttpRequest) -> HttpResponse:
         'form': form,
     })
 
+def check_date_conditions(form:CompleteProfileForm)->bool:
+    birth_date = form.cleaned_data.get('birth_date')
+    goal_date = form.cleaned_data.get('goal_date')
+    now=datetime.date.today()
+    if birth_date<goal_date and birth_date < now < goal_date:
+        return True
+    else:
+        return  False
 
 @login_required
 def complete_profile(request: HttpRequest) -> HttpResponse:
@@ -93,38 +108,53 @@ def complete_profile(request: HttpRequest) -> HttpResponse:
 
     if request.method == 'POST':
         form = CompleteProfileForm(request.POST)
-        if form.is_valid():
-            weight = form.cleaned_data.get('weight')
-            height = form.cleaned_data.get('height')
-            birth_date = form.cleaned_data.get('birth_date')
-            gender = form.cleaned_data.get('gender')
-            activity_level = form.cleaned_data.get('activity_level')
-            target_weight = form.cleaned_data.get('target_weight')
-            goal_date = form.cleaned_data.get('goal_date')
-            user=request.user
-            profile=UserProfile.objects.create(
-                user=user,
-                height=height,
-                birth_date=birth_date,
-                weight=weight,
-                gender=gender,
-                activity_level=activity_level,
-                target_weight=target_weight,
-                goal_date=goal_date,
-            )
+        if form.is_valid() and check_date_conditions(form):
+
+            profile=form.save(commit=False)
+            profile.user=request.user
+            profile.save()
 
             messages.success(request, 'User profile data inserted.')
-            return redirect('/food_logs/')
+            return redirect('complete_dietary_preferences')
 
         else:
-            messages.info(request,"Error when creating user profile.")
+            messages.error(request,"Error when creating user profile.")
 
     else:
         form=CompleteProfileForm()
 
     return render(request,'user/complete_profile.html',{'form':form})
 
+@login_required
+def complete_dietary_preferences(request: HttpRequest) -> HttpResponse:
+    try:
+        preferences=request.user.dietary_preferences
+        messages.info(request, 'You already have a dietary preferences')
+        return redirect('food_logs')
+    except DietaryPreferences.DoesNotExist:
+        pass
+
+    if request.method == 'POST':
+        form = CompleteDietaryPreferences(request.POST)
+        if form.is_valid():
+            preferences=form.save(commit=False)
+            preferences.user=request.user
+            preferences.save()
+
+            messages.success(request, 'Dietary preferences inserted.')
+            return redirect('food_logs')
+
+        else:
+            messages.error(request,"Error when adding dietary preferences.")
+
+    else:
+        form=CompleteDietaryPreferences()
+
+    return render(request,'user/complete_dietary_preferences.html',{'form':form})
+
+
+
 
 def logout_view(request: HttpRequest) -> HttpResponse:
     logout(request)
-    return redirect('/sign_in/')
+    return redirect('sign_in')
