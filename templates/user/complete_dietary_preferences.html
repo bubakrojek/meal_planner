@@ -1,0 +1,61 @@
+
+{% extends 'auth_base.html' %}
+
+
+{% block title %}Add Dietary Preferences{% endblock %}
+
+{% block content %}
+    <div style="background-image: url('https://static.vecteezy.com/system/resources/thumbnails/056/343/820/small/fitness-equipment-on-a-blue-textured-background-with-dumbbells-water-bottle-and-exercise-ropes-ready-for-workout-session-photo.jpeg');
+            background-size: cover;
+            background-attachment: fixed;
+            min-height: 100vh;
+            width: 100%;">
+
+        <div class="container d-flex align-items-center justify-content-center  " style="min-height:100vh">
+            <div class="card shadow" style="min-width:400px;max-width: 450px; background-color: rgba(33, 37, 41, 0.85);backdrop-filter: blur(8px);border: 1px solid rgba(255, 255, 255, 0.1);">
+                <div class="card-body p-5">
+                    <h5 class="card-title text-center">Insert Dietary Preferences</h5>
+                    <h6 class="card-subtitle text-center mb-5 ">Please enter your information</h6>
+                    <form method="POST" class="mx-auto">
+                        {% csrf_token %}
+                        <div class="form-check form-switch mb-3">
+                            {{ form.is_vegan }}
+                            <label class="form-check-label" for="{{ form.is_vegan.id_for_label }}">
+                                Vegan
+                            </label>
+                         </div>
+                        <div class="form-check form-switch mb-3">
+                           {{ form.is_vegetarian }}
+                            <label class="form-check-label" for="{{ form.is_vegan.id_for_label }}">
+                                Vegetarian
+                            </label>
+                        </div>
+                        <div class="form-check form-switch mb-3">
+                            {{ form.is_gluten_free }}
+                            <label class="form-check-label" for="{{ form.is_vegan.id_for_label }}">
+                                Gluten Free
+                            </label>
+                        </div>
+                         <div class="form-check form-switch mb-3">
+                           {{ form.is_dairy_free }}
+                             <label class="form-check-label" for="{{ form.is_vegan.id_for_label }}">
+                                Dairy Free
+                            </label>
+                        </div>
+                        <div class="form-check form-switch mb-3">
+                            {{ form.is_keto }}
+                            <label class="form-check-label" for="{{ form.is_vegan.id_for_label }}">
+                                Keto
+                            </label>
+                        </div>
+
+
+                        <button class="btn btn-primary w-100 mb-3" type="submit">Submit</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
