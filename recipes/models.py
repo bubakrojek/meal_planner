@@ -48,7 +48,7 @@ class MealType(models.TextChoices):
 class FoodLog(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='logs')
 
-    date=models.DateTimeField(auto_now_add=True)
+    date=models.DateField()
     meal_type=models.CharField(max_length=20,choices=MealType.choices)
 
     recipe=models.ForeignKey(Recipe,blank=True,null=True,on_delete=models.CASCADE)
@@ -61,7 +61,7 @@ class FoodLog(models.Model):
     custom_fat = models.DecimalField(blank=True,null=True,max_digits=5, decimal_places=2)
 
     servings = models.IntegerField()
-
+    created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         if self.custom_title is None:
             return f"{self.user.__str__()} {self.date} {self.recipe.title}"
