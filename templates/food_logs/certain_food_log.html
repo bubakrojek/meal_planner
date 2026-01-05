@@ -17,235 +17,66 @@
 </table>
 <div class="container mt-5">
     <h1 class="text-center mb-4">User logs of {{ user.username }}</h1>
-        <div class="card mb-4 shadow-sm">
-            <div class="card-header bg-primary text-white d-flex justify-content-between">
-                <h4>Breakfast</h4>
-                <a href="/add_log">
-                    <i class="bi bi-plus-circle fs-3" ></i>
-                </a>
+        {% for meal_name, food_logs in food_logs_types.items  %}
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-primary text-white d-flex justify-content-between">
+                    <h4>{{meal_name.capitalize  }}</h4>
+                    <a href="{% url 'add_food_log' date=this_date|date:'Y-m-d' meal_type=meal_name %}">
+                        <i class="bi bi-plus-circle fs-3" ></i>
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% for log in food_logs %}
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th class="w-50">Title:</th>
+                                <td>{{ log.recipe_title }}</td>
+                            </tr>
+                            <tr>
+                                <th class="w-50">Calories:</th>
+                                <td>{{ log.macroelement.calories }} kcal</td>
+                            </tr>
+                            <tr>
+                                <th>Proteins:</th>
+                                <td>{{ log.macroelement.protein }} g</td>
+                            </tr>
+                            <tr>
+                                <th>Fat:</th>
+                                <td>{{ log.macroelement.fat }} g</td>
+                            </tr>
+                            <tr>
+                                <th>Carbohydrates:</th>
+                                <td>{{ log.macroelement.carbohydrates }} g</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    {% endfor %}
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Calories</th>
+                                <th>Protein (g)</th>
+                                <th>Fat (g)</th>
+                                <th>Carbohydrates (g)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                {% for type, macros in day_macros.items %}
+                                    {% if type == meal_name %}
+                                        <td>{{ macros.calories }} kcal</td>
+                                        <td>{{ macros.protein }} g</td>
+                                        <td>{{ macros.fat }} g</td>
+                                        <td>{{ macros.carbohydrates }} g</td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="card-body">
-                {% for log in food_logs %}
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <th class="w-50">Calories:</th>
-                            <td>{{ log.macros.calories }} kcal</td>
-                        </tr>
-                        <tr>
-                            <th>Proteins:</th>
-                            <td>{{ log.macros.protein }} g</td>
-                        </tr>
-                        <tr>
-                            <th>Fat:</th>
-                            <td>{{ log.macros.fat }} g</td>
-                        </tr>
-                        <tr>
-                            <th>Carbohydrates:</th>
-                            <td>{{ log.macros.carbohydrates }} g</td>
-                        </tr>
-                    </tbody>
-                </table>
-            {% endfor %}
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <th class="w-20">Calories</th>
-                            <td>{{ day_macros.calories }} kcal</td>
-                            <th class="w-20">Protein</th>
-                            <td>{{ day_macros.protein }} g</td>
-                            <th class="w-20">Fat</th>
-                            <td>{{ day_macros.fat }} g</td>
-                            <th class="w-20">Carbohydrates</th>
-                            <td>{{ day_macros.carbohydrates }} g</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="card mb-4 shadow-sm">
-            <div class="card-header bg-primary text-white d-flex justify-content-between">
-                <h4>Lunch</h4>
-                <a href="/add_log">
-                    <i class="bi bi-plus-circle fs-3" ></i>
-                </a>
-            </div>
-            <div class="card-body">
-                {% for log in food_logs %}
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <th class="w-50">Calories:</th>
-                            <td>{{ log.macros.calories }} kcal</td>
-                        </tr>
-                        <tr>
-                            <th>Proteins:</th>
-                            <td>{{ log.macros.protein }} g</td>
-                        </tr>
-                        <tr>
-                            <th>Fat:</th>
-                            <td>{{ log.macros.fat }} g</td>
-                        </tr>
-                        <tr>
-                            <th>Carbohydrates:</th>
-                            <td>{{ log.macros.carbohydrates }} g</td>
-                        </tr>
-                    </tbody>
-                </table>
-            {% endfor %}
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <th class="w-20">Calories</th>
-                            <td>{{ day_macros.calories }} kcal</td>
-                            <th class="w-20">Protein</th>
-                            <td>{{ day_macros.protein }} g</td>
-                            <th class="w-20">Fat</th>
-                            <td>{{ day_macros.fat }} g</td>
-                            <th class="w-20">Carbohydrates</th>
-                            <td>{{ day_macros.carbohydrates }} g</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="card mb-4 shadow-sm">
-            <div class="card-header bg-primary text-white d-flex justify-content-between">
-                <h4>Dinner</h4>
-                <a href="/add_log">
-                    <i class="bi bi-plus-circle fs-3" ></i>
-                </a>
-            </div>
-            <div class="card-body">
-                {% for log in food_logs %}
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <th class="w-50">Calories:</th>
-                            <td>{{ log.macros.calories }} kcal</td>
-                        </tr>
-                        <tr>
-                            <th>Proteins:</th>
-                            <td>{{ log.macros.protein }} g</td>
-                        </tr>
-                        <tr>
-                            <th>Fat:</th>
-                            <td>{{ log.macros.fat }} g</td>
-                        </tr>
-                        <tr>
-                            <th>Carbohydrates:</th>
-                            <td>{{ log.macros.carbohydrates }} g</td>
-                        </tr>
-                    </tbody>
-                </table>
-            {% endfor %}
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <th class="w-20">Calories</th>
-                            <td>{{ day_macros.calories }} kcal</td>
-                            <th class="w-20">Protein</th>
-                            <td>{{ day_macros.protein }} g</td>
-                            <th class="w-20">Fat</th>
-                            <td>{{ day_macros.fat }} g</td>
-                            <th class="w-20">Carbohydrates</th>
-                            <td>{{ day_macros.carbohydrates }} g</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="card mb-4 shadow-sm">
-            <div class="card-header bg-primary text-white d-flex justify-content-between">
-                <h4>Snack</h4>
-                <a href="/add_log">
-                    <i class="bi bi-plus-circle fs-3" ></i>
-                </a>
-            </div>
-            <div class="card-body">
-                {% for log in food_logs %}
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <th class="w-50">Calories:</th>
-                            <td>{{ log.macros.calories }} kcal</td>
-                        </tr>
-                        <tr>
-                            <th>Proteins:</th>
-                            <td>{{ log.macros.protein }} g</td>
-                        </tr>
-                        <tr>
-                            <th>Fat:</th>
-                            <td>{{ log.macros.fat }} g</td>
-                        </tr>
-                        <tr>
-                            <th>Carbohydrates:</th>
-                            <td>{{ log.macros.carbohydrates }} g</td>
-                        </tr>
-                    </tbody>
-                </table>
-            {% endfor %}
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <th class="w-20">Calories</th>
-                            <td>{{ day_macros.calories }} kcal</td>
-                            <th class="w-20">Protein</th>
-                            <td>{{ day_macros.protein }} g</td>
-                            <th class="w-20">Fat</th>
-                            <td>{{ day_macros.fat }} g</td>
-                            <th class="w-20">Carbohydrates</th>
-                            <td>{{ day_macros.carbohydrates }} g</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="card mb-4 shadow-sm">
-            <div class="card-header bg-primary text-white d-flex justify-content-between">
-                <h4>Supper</h4>
-                <a href="/add_log">
-                    <i class="bi bi-plus-circle fs-3" ></i>
-                </a>
-            </div>
-            <div class="card-body">
-                {% for log in food_logs %}
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <th class="w-50">Calories:</th>
-                            <td>{{ log.macros.calories }} kcal</td>
-                        </tr>
-                        <tr>
-                            <th>Proteins:</th>
-                            <td>{{ log.macros.protein }} g</td>
-                        </tr>
-                        <tr>
-                            <th>Fat:</th>
-                            <td>{{ log.macros.fat }} g</td>
-                        </tr>
-                        <tr>
-                            <th>Carbohydrates:</th>
-                            <td>{{ log.macros.carbohydrates }} g</td>
-                        </tr>
-                    </tbody>
-                </table>
-            {% endfor %}
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <th class="w-20">Calories</th>
-                            <td>{{ day_macros.calories }} kcal</td>
-                            <th class="w-20">Protein</th>
-                            <td>{{ day_macros.protein }} g</td>
-                            <th class="w-20">Fat</th>
-                            <td>{{ day_macros.fat }} g</td>
-                            <th class="w-20">Carbohydrates</th>
-                            <td>{{ day_macros.carbohydrates }} g</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        {% endfor %}
+
 </div>
 {% endblock %}
