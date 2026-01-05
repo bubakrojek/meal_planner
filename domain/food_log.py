@@ -1,8 +1,11 @@
+from functools import reduce
+
 from django.contrib.auth.models import User
 
-from recipes.models import Recipe, FoodLog
+from recipes.models import Recipe, FoodLog, MealType
 
-def val(custom,original):
+
+def val(custom, original):
     return custom if custom is not None else original
 
 
@@ -26,25 +29,74 @@ def get_entry_macros(food_log: FoodLog) -> dict:
                 food_log.custom_carbohydrates if food_log.custom_carbohydrates is not None else food_log.recipe.carbohydrates)
         }
 
-def get_day_macros(user:User,date) -> dict:
-    food_logs=FoodLog.objects.filter(user=user,date__date=date)
 
-    return {
-        'calories':sum(get_entry_macros(log)['calories'] for log in food_logs),
-        'protein': sum(get_entry_macros(log)['protein'] for log in food_logs),
-        'fat': sum(get_entry_macros(log)['fat'] for log in food_logs),
-        'carbohydrates': sum(get_entry_macros(log)['carbohydrates'] for log in food_logs)
-    }
+def get_day_macros(user: User, date) -> dict:
+    food_logs_type = [(
+        meal_type.value,
+        FoodLog.objects.filter(user=user, date=date, meal_type=meal_type.value)
+    ) for meal_type in MealType]
 
-def get_certain_food_log(user:User, date):
-    food_logs=FoodLog.objects.filter(user=user,date__date=date).select_related('recipe')
+    def sum_macros(logs):
+        if not logs.exists():
+            return {'calories': 0, 'protein': 0, 'fat': 0, 'carbohydrates': 0}
+        else:
+            macroelements_list = list(map(get_entry_macros, logs))
 
-    return [
-        {
-            'recipe_title':val(log.custom_title,log.recipe.title),
-            'serving':log.servings,
-            'meal_type':log.meal_type.capitalize(),
-            'macroelement':get_entry_macros(log),
-        }
-        for log in food_logs
+            return reduce(
+                lambda acc, item: {
+                    'calories': acc['calories'] + item['calories'],
+                    'protein': acc['protein'] + item['protein'],
+                    'fat': acc['fat'] + item['fat'],
+                    'carbohydrates': acc['carbohydrates'] + item['carbohydrates']
+                },
+                macroelements_list,
+                {'calories': 0, 'protein': 0, 'fat': 0, 'carbohydrates': 0}
+            )
+
+    return dict(
+        map(
+            lambda item: (item[0], sum_macros(item[1])),
+            food_logs_type
+        )
+    )
+
+
+def get_certain_food_log(user: User, date):
+    food_logs_types = [(
+    meal_type.value, FoodLog.objects.filter(user=user, date=date, meal_type=meal_type.value).select_related('recipe')
+    )for meal_type in MealType]
+
+    flat_logs = [
+        (
+            food_logs[0],
+            {
+                'recipe_title': log.custom_title if log.recipe is None else log.recipe.title if log.custom_title is None else val(
+                    log.custom_title, log.recipe.title),
+                'serving': log.servings,
+                'macroelement': get_entry_macros(log),
+            }
+
+        )
+        for food_logs in food_logs_types
+        for log in food_logs[1]
     ]
+
+    result= reduce(
+        lambda acc, item: {
+            **acc,
+            item[0]: acc.get(item[0], []) + [item[1]]
+        },
+        flat_logs,
+        {}
+    )
+    for meal_type in MealType:
+        if meal_type.value not in result:
+            result[meal_type.value] = []
+
+    return result
+
+def get_recipes():
+    recipes = Recipe.objects.all()
+    return {
+        'recipes': recipes,
+    }
