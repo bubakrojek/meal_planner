@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from users.models import UserProfile, DietaryPreferences
+from users.models import UserProfile, DietaryPreferences, WeightLog
 
 
 class SingUpForm(UserCreationForm):
@@ -48,7 +48,6 @@ class CompleteProfileForm(forms.ModelForm):
                 'onfocus':"(this.type='date')",
                 'class': 'form-control',
                 'placeholder': 'Goal Date',
-                'step': '0.01'
             }),
         }
 
@@ -78,4 +77,28 @@ class CompleteDietaryPreferences(forms.ModelForm):
             'is_gluten_free': 'Gluten Free',
             'is_dairy_free': 'Dairy Free',
             'is_keto': 'Keto',
+        }
+
+class AddWeightLog(forms.ModelForm):
+    class Meta:
+        model=WeightLog
+        fields=['date','weight','notes']
+        widgets={
+            'date':forms.widgets.DateInput(
+                attrs={
+                    'type': 'text',
+                    'onfocus': "(this.type='date')",
+                    'class': 'form-control',
+                    'placeholder': 'Log date',
+                }
+            ),
+            'weight':forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Weight (kg)',
+                'step': '0.01'
+            }),
+            'notes':forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Notes'
+            })
         }
