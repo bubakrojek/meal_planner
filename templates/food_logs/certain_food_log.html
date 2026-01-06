@@ -4,31 +4,78 @@
 
 {% block content %}
 
-<table class="table table-hover bg-dark-subtle  mt-0 text-center w-100">
-    <tbody>
+    <table class="table table-hover bg-dark-subtle  mt-0 text-center w-100">
+        <tbody>
         <tr>
             {% for date in dates %}
-            <td>
-                <a href="?date={{ date|date:'Y-m-d' }}" class="btn btn-secondary">{{ date|date:'Y-m-d' }}</a>
-            </td>
-        {% endfor %}
+                <td>
+                    <a href="?date={{ date|date:'Y-m-d' }}" class="btn btn-secondary">{{ date|date:'Y-m-d' }}</a>
+                </td>
+            {% endfor %}
         </tr>
-    </tbody>
-</table>
-<div class="container mt-5">
-    <h1 class="text-center mb-4">User logs of {{ user.username }}</h1>
-        {% for meal_name, food_logs in food_logs_types.items  %}
+        </tbody>
+    </table>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">User logs of {{ user.username }}</h1>
+        <div class="card shadow mb-3"
+             style="background-color: rgba(33, 37, 41, 0.85);backdrop-filter: blur(8px);border: 1px solid rgba(255, 255, 255, 0.1);">
+            <div class="card-body p-5">
+                <div class="list-group-item">
+                    <div class="row">
+                        <div class="col-3">Calories</div>
+                        <div class="col-3">Proteins</div>
+                        <div class="col-3">Fat</div>
+                        <div class="col-3">Carbohydrates</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="progress mb-2">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                                     aria-valuenow={{ percentages.calories }} aria-valuemin="0" aria-valuemax="100" style="width: {{ percentages.calories }}%" >
+                                </div>
+                            </div>
+                            {{ summed_day_macroelements.calories }} / {{ calculated_macroelements.calories }}
+                        </div>
+                        <div class="col-3">
+                            <div class="progress mb-2">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                                     aria-valuenow={{ percentages.protein }} aria-valuemin="0" aria-valuemax="100" style="width: {{ percentages.protein }}%" >
+                                </div>
+                            </div>
+                            {{ summed_day_macroelements.protein }} / {{ calculated_macroelements.protein }}
+                        </div>
+                        <div class="col-3">
+                            <div class="progress mb-2">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                                     aria-valuenow={{ percentages.fat }} aria-valuemin="0" aria-valuemax="100" style="width: {{ percentages.fat }}%" >
+                                </div>
+                            </div>
+                            {{ summed_day_macroelements.fat }} / {{ calculated_macroelements.fat }}
+                        </div>
+                        <div class="col-3">
+                            <div class="progress mb-2">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                                    aria-valuenow={{ percentages.carbohydrates }} aria-valuemin="0" aria-valuemax="100" style="width: {{ percentages.carbohydrates }}%" >
+                                </div>
+                            </div>
+                            {{ summed_day_macroelements.carbohydrates }} / {{ calculated_macroelements.carbohydrates }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% for meal_name, food_logs in food_logs_types.items %}
             <div class="card mb-4 shadow-sm">
                 <div class="card-header bg-primary text-white d-flex justify-content-between">
-                    <h4>{{meal_name.capitalize  }}</h4>
+                    <h4>{{ meal_name.capitalize }}</h4>
                     <a href="{% url 'add_food_log' date=this_date|date:'Y-m-d' meal_type=meal_name %}">
-                        <i class="bi bi-plus-circle fs-3" ></i>
+                        <i class="bi bi-plus-circle fs-3"></i>
                     </a>
                 </div>
                 <div class="card-body">
                     {% for log in food_logs %}
-                    <table class="table table-bordered">
-                        <tbody>
+                        <table class="table table-bordered">
+                            <tbody>
                             <tr>
                                 <th class="w-50">Title:</th>
                                 <td>{{ log.recipe_title }}</td>
@@ -49,34 +96,35 @@
                                 <th>Carbohydrates:</th>
                                 <td>{{ log.macroelement.carbohydrates }} g</td>
                             </tr>
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
                     {% endfor %}
                     <table class="table table-bordered">
                         <thead>
-                            <tr>
-                                <th>Calories</th>
-                                <th>Protein (g)</th>
-                                <th>Fat (g)</th>
-                                <th>Carbohydrates (g)</th>
-                            </tr>
+                        <tr>
+                            <th>Calories</th>
+                            <th>Protein (g)</th>
+                            <th>Fat (g)</th>
+                            <th>Carbohydrates (g)</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                {% for type, macros in day_macros.items %}
-                                    {% if type == meal_name %}
-                                        <td>{{ macros.calories }} kcal</td>
-                                        <td>{{ macros.protein }} g</td>
-                                        <td>{{ macros.fat }} g</td>
-                                        <td>{{ macros.carbohydrates }} g</td>
-                                    {% endif %}
-                                {% endfor %}
-                            </tr>
+                        <tr>
+                            {% for type, macros in day_macros.items %}
+                                {% if type == meal_name %}
+                                    <td>{{ macros.calories }} kcal</td>
+                                    <td>{{ macros.protein }} g</td>
+                                    <td>{{ macros.fat }} g</td>
+                                    <td>{{ macros.carbohydrates }} g</td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+
                         </tbody>
                     </table>
                 </div>
             </div>
         {% endfor %}
 
-</div>
+    </div>
 {% endblock %}

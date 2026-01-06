@@ -5,7 +5,8 @@ from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from domain.food_log import get_certain_food_log, get_day_macros, get_recipes
+from domain.food_log import get_certain_food_log, get_day_macros, get_recipes, get_date, sum_day_macros, \
+    get_macroelements_percentages
 from recipes.forms import FoodLogForm
 from django.contrib import messages
 
@@ -16,18 +17,13 @@ from django.contrib import messages
 def certain_food_log(request: HttpRequest) -> HttpResponse:
     date_str = request.GET.get('date')
 
-    if date_str:
-        try:
-            date = datetime.strptime(date_str, '%Y-%m-%d').date()
-        except ValueError:
-            date = datetime.today()
-    else:
-        date = datetime.today()
-
+    date=get_date(date_str)
     dates = [date + timedelta(days=i) for i in range(-3, 4)]
 
     food_logs = get_certain_food_log(user=request.user, date=date)
     day_macros = get_day_macros(user=request.user, date=date)
+    summed_day_macroelements=sum_day_macros(user=request.user, date=date)
+    percentages=get_macroelements_percentages(actual_macroelements=summed_day_macroelements,user=request.user)
 
     return render(request, 'food_logs/certain_food_log.html', {
         'user': request.user,
@@ -35,6 +31,9 @@ def certain_food_log(request: HttpRequest) -> HttpResponse:
         'day_macros': day_macros,
         'dates': dates,
         'this_date':date,
+        'calculated_macroelements':request.user.profile.macronutrients,
+        'summed_day_macroelements':summed_day_macroelements,
+        'percentages':percentages,
     })
 
 @login_required

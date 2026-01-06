@@ -41,10 +41,10 @@ class WeightLog(models.Model):
 
 
 class Macronutrients(models.Model):
-    user = models.OneToOneField(User,null=True,blank=True, on_delete=models.CASCADE, related_name='macro_nutrients')
+    user = models.OneToOneField(User,null=True,blank=True, on_delete=models.CASCADE, related_name='macronutrients')
     calories = models.DecimalField(max_digits=6, decimal_places=2)
-    protein = models.DecimalField(max_digits=6, decimal_places=2)  # gramy
-    carbohydrates = models.DecimalField(max_digits=6, decimal_places=2)  # gramy
+    protein = models.DecimalField(max_digits=6, decimal_places=2)
+    carbohydrates = models.DecimalField(max_digits=6, decimal_places=2)
     fat = models.DecimalField(max_digits=6, decimal_places=2)
 
 
