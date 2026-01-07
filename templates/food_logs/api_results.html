@@ -1,0 +1,20 @@
+{% for recipe in recipes %}
+<a href="#" class="list-group-item list-group-item-action api-recipe-item"
+   data-title="{{ recipe.title }}"
+   data-calories="{{ recipe.calories }}"
+   data-protein="{{ recipe.protein }}"
+   data-carbs="{{ recipe.carbohydrates }}"
+   data-fat="{{ recipe.fat }}">
+    <div class="d-flex justify-content-between">
+        <h6 class="mb-1">{{ recipe.title }}</h6>
+        <small>{{ recipe.calories|floatformat:0 }} kcal</small>
+    </div>
+    <small class="text-muted">
+        P: {{ recipe.protein|floatformat:1 }}g | 
+        C: {{ recipe.carbohydrates|floatformat:1 }}g | 
+        F: {{ recipe.fat|floatformat:1 }}g
+    </small>
+</a>
+{% empty %}
+<div class="list-group-item text-muted">No results found</div>
+{% endfor %}

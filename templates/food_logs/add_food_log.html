@@ -1,4 +1,3 @@
-
 {% extends 'auth_base.html' %}
 
 
@@ -12,29 +11,81 @@
             width: 100%;">
 
         <div class="container d-flex align-items-center justify-content-center  " style="min-height:100vh">
-            <div class="card shadow" style="min-width:400px;max-width: 450px; background-color: rgba(33, 37, 41, 0.85);backdrop-filter: blur(8px);border: 1px solid rgba(255, 255, 255, 0.1);">
+            <div class="card shadow"
+                 style="min-width:400px;max-width: 450px; background-color: rgba(33, 37, 41, 0.85);backdrop-filter: blur(8px);border: 1px solid rgba(255, 255, 255, 0.1);">
                 <div class="card-body p-5">
                     <h5 class="card-title text-center">Add food log</h5>
+
+
                     <form method="POST" class="mx-auto">
                         {% csrf_token %}
+
                         <div class="mb-3">
-                            <label class="form-label"></label>
-                                {{ form.recipe }}
-                        <div class="mb-3">
-                            {{ form.custom_title }}
-                         </div>
-                        <div class="mb-3">
-                           {{ form.custom_calories }}
+                            <label class="form-label">Recipe Source</label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="recipe_source" id="source_db"
+                                       value="database" checked>
+                                <label class="btn btn-outline-primary" for="source_db">
+                                    My Recipes
+                                </label>
+
+                                <input type="radio" class="btn-check" name="recipe_source" id="source_api" value="api">
+                                <label class="btn btn-outline-primary" for="source_api">
+                                    Search API
+                                </label>
+
+                                <input type="radio" class="btn-check" name="recipe_source"
+                                       id="source_custom" value="custom">
+                                <label class="btn btn-outline-primary" for="source_custom">
+                                    Custom Meal
+                                </label>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            {{ form.custom_protein }}
+
+                        <div id="recipe-db-section" class="mb-3">
+                            <label class="form-label">Select Recipe</label>
+                            {{ form.recipe }}
                         </div>
-                        <div class="mb-3">
-                            {{ form.custom_carbohydrates }}
+
+                        <div id="recipe-api-section" class="mb-3" style="display: none">
+                            <label class="form-label">Search Recipe</label>
+                            <input
+                                    type="search"
+                                    id="api-search"
+                                    class="form-control"
+                                    placeholder="Type to search..."
+                                    hx-get="{% url 'search_recipes_htmx' %}"
+                                    hx-trigger="keyup changed delay:500ms"
+                                    hx-target="#api-results"
+                                    hx-vals='js:{q:document.getElementById("api-search").value}'
+                            >
+                            <div id="api-results" class="list-group mt-2"></div>
+
+                            <input type="hidden" name="api_recipe_title" id="api_recipe_title">
+                            <input type="hidden" name="api_recipe_calories" id="api_recipe_calories">
+                            <input type="hidden" name="api_recipe_protein" id="api_recipe_protein">
+                            <input type="hidden" name="api_recipe_fat" id="api_recipe_fat">
+                            <input type="hidden" name="api_recipe_carbohydrates" id="api_recipe_carbohydrates">
                         </div>
-                        <div class="mb-3">
-                            {{ form.custom_fat }}
+
+                        <div id="recipe-custom-section" style="display: none;">
+                            <div class="mb-3">
+                                {{ form.custom_title }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.custom_calories }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.custom_protein }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.custom_carbohydrates }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.custom_fat }}
+                            </div>
                         </div>
+
                         <div class="mb-3">
                             {{ form.servings }}
                         </div>
@@ -47,5 +98,47 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.querySelectorAll('input[name="recipe_source"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                document.getElementById('recipe-db-section').style.display = 'none';
+                document.getElementById('recipe-api-section').style.display = 'none';
+                document.getElementById('recipe-custom-section').style.display = 'none';
+
+                if (e.target.value === 'database') {
+                    document.getElementById('recipe-db-section').style.display = 'block';
+                } else if (e.target.value === 'api') {
+                    document.getElementById('recipe-api-section').style.display = 'block';
+                } else if (e.target.value === 'custom') {
+                    document.getElementById('recipe-custom-section').style.display = 'block';
+                }
+            });
+        });
+
+
+        document.body.addEventListener('htmx:afterSwap', (event) => {
+            if (event.detail.target.id === 'api-results') {
+                document.querySelectorAll('.api-recipe-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        e.preventDefault()
+                        document.getElementById('api_recipe_title').value = item.dataset.title;
+                        document.getElementById('api_recipe_calories').value = item.dataset.calories;
+                        document.getElementById('api_recipe_protein').value = item.dataset.protein;
+                        document.getElementById('api_recipe_carbohydrates').value = item.dataset.carbs;
+                        document.getElementById('api_recipe_fat').value = item.dataset.fat;
+
+                        document.querySelectorAll('.api-recipe-item').forEach(i =>
+                            i.classList.remove('active', 'list-group-item-primary'));
+                        item.classList.add('active', 'list-group-item-primary');
+                    });
+                });
+            }
+        });
+
+    </script>
+
+
+
 
 {% endblock %}

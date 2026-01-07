@@ -31,7 +31,8 @@
                         <div class="col-3">
                             <div class="progress mb-2">
                                 <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                                     aria-valuenow={{ percentages.calories }} aria-valuemin="0" aria-valuemax="100" style="width: {{ percentages.calories }}%" >
+                                     aria-valuenow={{ percentages.calories }} aria-valuemin="0" aria-valuemax="100"
+                                     style="width: {{ percentages.calories }}%">
                                 </div>
                             </div>
                             {{ summed_day_macroelements.calories }} / {{ calculated_macroelements.calories }}
@@ -39,7 +40,8 @@
                         <div class="col-3">
                             <div class="progress mb-2">
                                 <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                                     aria-valuenow={{ percentages.protein }} aria-valuemin="0" aria-valuemax="100" style="width: {{ percentages.protein }}%" >
+                                     aria-valuenow={{ percentages.protein }} aria-valuemin="0" aria-valuemax="100"
+                                     style="width: {{ percentages.protein }}%">
                                 </div>
                             </div>
                             {{ summed_day_macroelements.protein }} / {{ calculated_macroelements.protein }}
@@ -47,7 +49,8 @@
                         <div class="col-3">
                             <div class="progress mb-2">
                                 <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                                     aria-valuenow={{ percentages.fat }} aria-valuemin="0" aria-valuemax="100" style="width: {{ percentages.fat }}%" >
+                                     aria-valuenow={{ percentages.fat }} aria-valuemin="0" aria-valuemax="100"
+                                     style="width: {{ percentages.fat }}%">
                                 </div>
                             </div>
                             {{ summed_day_macroelements.fat }} / {{ calculated_macroelements.fat }}
@@ -55,7 +58,8 @@
                         <div class="col-3">
                             <div class="progress mb-2">
                                 <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                                    aria-valuenow={{ percentages.carbohydrates }} aria-valuemin="0" aria-valuemax="100" style="width: {{ percentages.carbohydrates }}%" >
+                                     aria-valuenow={{ percentages.carbohydrates }} aria-valuemin="0" aria-valuemax="100"
+                                     style="width: {{ percentages.carbohydrates }}%">
                                 </div>
                             </div>
                             {{ summed_day_macroelements.carbohydrates }} / {{ calculated_macroelements.carbohydrates }}
@@ -78,7 +82,27 @@
                             <tbody>
                             <tr>
                                 <th class="w-50">Title:</th>
-                                <td>{{ log.recipe_title }}</td>
+                                <td>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <h5 class="mb-0">{{ log.recipe_title }}</h5>
+                                        <div class="btn-group">
+                                            <form method="POST" action="{% url 'delete_food_log' log.id %}"
+                                                  style="display: inline;">
+                                                {% csrf_token %}
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-danger"
+                                                        onclick="return confirm('Are you sure you want to delete this log?')">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                            <a href="{% url 'update_food_log' log.id %}" class="btn btn-sm btn-info">
+                                                Update
+                                            </a>
+                                        </div>
+                                    </div>
+
+
+                                </td>
                             </tr>
                             <tr>
                                 <th class="w-50">Calories:</th>
@@ -96,6 +120,7 @@
                                 <th>Carbohydrates:</th>
                                 <td>{{ log.macroelement.carbohydrates }} g</td>
                             </tr>
+
                             </tbody>
                         </table>
                     {% endfor %}

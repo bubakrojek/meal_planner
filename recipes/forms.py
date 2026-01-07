@@ -58,12 +58,22 @@ class FoodLogForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        recipe = cleaned_data.get('recipe')
-        custom_title = cleaned_data.get('custom_title')
 
+        recipe_source = self.data.get('recipe_source')
 
-        if not recipe and not custom_title:
-            raise forms.ValidationError('You must select a recipe or enter a custom meal name.')
+        if recipe_source == 'database':
+            if not cleaned_data.get('recipe'):
+                raise forms.ValidationError('Please select a recipe from your database.')
+        elif recipe_source == 'api':
+            if not self.data.get('api_recipe_title'):
+                raise forms.ValidationError('Please select a recipe from API search results.')
+        elif recipe_source == 'custom':
+            required_custom = ['custom_title', 'custom_calories', 'custom_protein',
+                               'custom_carbohydrates', 'custom_fat']
+            if not all(cleaned_data.get(field) is not None for field in required_custom):
+                raise forms.ValidationError(
+                    'Please fill all custom meal fields: title, calories, protein, carbs, and fat.'
+                )
 
         return cleaned_data
 

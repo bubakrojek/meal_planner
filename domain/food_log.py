@@ -89,6 +89,8 @@ def get_day_macros(user: User, date) -> dict:
 
 
 def get_certain_food_log(user: User, date):
+    meal_type_list = {meal_type.value: [] for meal_type in MealType}
+
     food_logs_types = [(
         meal_type.value,
         FoodLog.objects.filter(user=user, date=date, meal_type=meal_type.value).select_related('recipe')
@@ -102,6 +104,7 @@ def get_certain_food_log(user: User, date):
                     log.custom_title, log.recipe.title),
                 'serving': log.servings,
                 'macroelement': get_entry_macros(log),
+                'id': log.id,
             }
 
         )
@@ -115,11 +118,8 @@ def get_certain_food_log(user: User, date):
             item[0]: acc.get(item[0], []) + [item[1]]
         },
         flat_logs,
-        {}
+        meal_type_list
     )
-    for meal_type in MealType:
-        if meal_type.value not in result:
-            result[meal_type.value] = []
 
     return result
 
@@ -129,3 +129,17 @@ def get_recipes():
     return {
         'recipes': recipes,
     }
+
+
+def create_recipe_from_food_log(user: User, title: str, calories: float, protein: float, carbohydrates: float,
+                                fat: float, servings: int):
+    Recipe.objects.create(
+        title=title,
+        calories=calories,
+        protein=protein,
+        carbohydrates=carbohydrates,
+        fat=fat,
+        is_custom=True,
+        servings=servings,
+        created_by=user,
+    )
