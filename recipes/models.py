@@ -7,7 +7,7 @@ class Recipe (models.Model):
     spoonacular_id=models.IntegerField(unique=True,null=True)
 
     title=models.CharField(max_length=300)
-
+    ingredients_text = models.TextField(blank=True)
     calories=models.DecimalField(max_digits=6,decimal_places=2)
     protein=models.DecimalField(max_digits=5,decimal_places=2)
     carbohydrates=models.DecimalField(max_digits=5,decimal_places=2)
@@ -23,6 +23,9 @@ class Recipe (models.Model):
     is_custom=models.BooleanField(default=False)
     created_by=models.ForeignKey(User,null=True,on_delete=models.SET_NULL)
     created_at=models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
 
     def __str__(self):
         return self.title
