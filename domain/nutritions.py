@@ -24,6 +24,18 @@ def calculate_tdee(bmr: float, activity_level: str) -> float:
         return bmr * 1.9
 
 
+def calculate_target_calories(
+        tdee: float,
+        current_weight: float,
+        target_weight: float,
+        days_to_goal: int
+) -> float:
+    weight_diff = current_weight - target_weight
+    total_energy_change = weight_diff * 7700
+    daily_energy_change = total_energy_change / days_to_goal
+    return tdee - daily_energy_change
+
+
 def calculate_protein(activity_level: str, weight: decimal) -> float:
     if activity_level == '1' or activity_level == '2':
         return weight * 1.1
@@ -39,10 +51,10 @@ def calculate_carbohydrates(tdee: float) -> float:
     return (0.45 * tdee) / 4.0
 
 
-def calculate_target_macros(activity_level: str, weight: decimal,tdee: float, bmr: float)->dict:
+def calculate_target_macros(activity_level: str, weight: decimal,target_weight:decimal,days_to_goal: int, bmr: float) -> dict:
     return {
-        'calories':calculate_tdee(bmr,activity_level),
-        'protein':calculate_protein(activity_level,weight),
-        'fat':calculate_fat(weight),
-        'carbohydrates':calculate_carbohydrates(tdee)
+        'calories': round(calculate_target_calories(calculate_tdee(bmr, activity_level),weight,target_weight,days_to_goal),2),
+        'protein': calculate_protein(activity_level, weight),
+        'fat': calculate_fat(weight),
+        'carbohydrates': round(calculate_carbohydrates(calculate_tdee(bmr, activity_level)),2)
     }
