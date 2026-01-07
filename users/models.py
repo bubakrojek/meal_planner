@@ -37,7 +37,7 @@ class WeightLog(models.Model):
         unique_together=['user','date']
 
     def __str__(self):
-        return f'{self.user.username}  - {self.weight} at {self.date}'
+        return f'{self.weight} at {self.date}'
 
 
 class Macronutrients(models.Model):
@@ -78,7 +78,7 @@ class UserProfile(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     target_macros = models.ForeignKey(Macronutrients, null=True, blank=True, on_delete=models.SET_NULL,
-                                      related_name='user_profiles')
+                                      related_name='user_profile')
 
     def __str__(self):
         return f"{self.user.username}"
@@ -113,7 +113,7 @@ class UserProfile(models.Model):
 
         else:
             from domain.nutritions import calculate_target_macros
-            macroelements = calculate_target_macros(self.activity_level, float(self.weight), self.tdee, self.bmr)
+            macroelements = calculate_target_macros(self.activity_level, float(self.weight),float(self.target_weight), (self.goal_date-self.created_at.date()).days,  self.bmr)
             macroelements_obj=Macronutrients.objects.create(
                 calories=macroelements['calories'],
                 protein=macroelements['protein'],
