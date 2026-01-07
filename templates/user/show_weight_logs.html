@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Weight Logs{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-3">
+                <nav class="nav flex-column bg-dark-subtle p-3 rounded">
+                    <a class="nav-link" href="/food_logs/">
+                        <i class="bi bi-grid"></i> Dashboard
+                    </a>
+                    <a class="nav-link " href="/profile/">
+                        <i class="bi bi-person"></i> My Account
+                    </a>
+                    <a class="nav-link active bg-primary" href="/show_weight_logs/">
+                        <i class="bi bi-target"></i> Weight logs
+                    </a>
+                    <a class="nav-link" href="/settings/">
+                        <i class="bi bi-gear"></i> Settings
+                    </a>
+                </nav>
+            </div>
+            <div class="col-md-9">
+                <div class="text-center ">
+                    <a href="/add_weight_log/" type="button" class="btn btn-lg btn-outline-info mb-3 w-100">Add Weight Log</a>
+                </div>
+                {{ chart_html|safe }}
+                <div class="card">
+                    <div class="card-body">
+
+                        <div class="list-group-item">
+                            <div class="row mb-2">
+                                <div class="col-3">Date</div>
+                                <div class="col-3">Weight</div>
+                                <div class="col-6">Notes</div>
+                            </div>
+                            {% for log in weight_logs %}
+                                <div class="row mb-2">
+                                    <div class="col-3">{{ log.date|date:"F d, Y" }}</div>
+                                    <div class="col-3">{{ log.weight }}</div>
+                                    <div class="col-3">{{ log.notes }}</div>
+                                    <div class="col-1">
+                                        <form method="POST" action="{% url 'delete_food_log' log.id %}"
+                                              style="display: inline;">
+                                            {% csrf_token %}
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('Are you sure you want to delete this log?')">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="col-1">
+                                        <a href="{% url 'update_weight_log' log.id %}" class="btn btn-sm btn-info">
+                                            Update
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <div class="row mb-2">
+                                <div class="col-3">{{ profile.created_at|date:"F d, Y" }}</div>
+                                <div class="col-3">{{ profile.weight }}</div>
+                                <div class="col-6">None</div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
