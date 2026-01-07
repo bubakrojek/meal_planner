@@ -15,6 +15,11 @@
 
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'meal_plan' %}">
+                        <i class="bi bi-calendar3"></i> Meal Plan
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="/profile/">
                         <i class="bi bi-person"></i> {{ user.username }}
                     </a>
@@ -24,6 +29,7 @@
                         <i class="bi bi-door-open"></i> Wyloguj
                     </a>
                 </li>
+
             </ul>
         </div>
     </nav>

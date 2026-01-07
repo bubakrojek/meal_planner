@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 # Create your models here.
 
+
 class Recipe (models.Model):
     spoonacular_id=models.IntegerField(unique=True,null=True)
 
@@ -62,6 +63,38 @@ class FoodLog(models.Model):
 
     servings = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+
+    def __str__(self):
+        if self.custom_title is None:
+            return f"{self.user.__str__()} {self.date} {self.recipe.title}"
+        else:
+            return f"{self.user.__str__()} {self.date} {self.custom_title}"
+
+
+class PlannedMeal(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='planned_meals')
+
+    date = models.DateField()
+    meal_type = models.CharField(max_length=20, choices=MealType.choices)
+
+    recipe = models.ForeignKey(Recipe, blank=True, null=True, on_delete=models.CASCADE)
+
+    custom_title = models.CharField(blank=True, null=True, max_length=300)
+
+    custom_calories = models.DecimalField(blank=True, null=True, max_digits=6, decimal_places=2)
+    custom_protein = models.DecimalField(blank=True, null=True, max_digits=5, decimal_places=2)
+    custom_carbohydrates = models.DecimalField(blank=True, null=True, max_digits=5, decimal_places=2)
+    custom_fat = models.DecimalField(blank=True, null=True, max_digits=5, decimal_places=2)
+
+    servings = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['date', 'meal_type']
+        unique_together = ['user', 'date', 'meal_type']
+
     def __str__(self):
         if self.custom_title is None:
             return f"{self.user.__str__()} {self.date} {self.recipe.title}"

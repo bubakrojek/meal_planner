@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Planned Meal{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-plus-circle"></i> Add Planned Meal
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Info o dniu i posiłku -->
+                    <div class="alert alert-info">
+                        <strong>Date:</strong> {{ date|date:"l, F j, Y" }}<br>
+                        <strong>Meal Type:</strong> {{ meal_type|title }}
+                    </div>
+                    
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-book"></i> Select Recipe
+                            </label>
+                            <select name="recipe" class="form-select form-select-lg" required>
+                                <option value="">-- Choose a recipe --</option>
+                                {% for recipe in recipes %}
+                                <option value="{{ recipe.id }}">
+                                    {{ recipe.title }} 
+                                    ({{ recipe.calories|floatformat:0 }} kcal)
+                                </option>
+                                {% endfor %}
+                            </select>
+                            {% if not recipes %}
+                            <small class="text-muted">
+                                You don't have any recipes yet. 
+                                <a href="{% url 'add_recipe' %}">Create one</a> first.
+                            </small>
+                            {% endif %}
+                        </div>
+                        
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-hash"></i> Servings
+                            </label>
+                            <input type="number" name="servings" class="form-control" 
+                                   value="1" min="1" max="10" required>
+                        </div>
+                        
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-pencil"></i> Notes (Optional)
+                            </label>
+                            <textarea name="notes" class="form-control" rows="3" 
+                                      placeholder="Any special notes or modifications..."></textarea>
+                        </div>
+                        
+                        <!-- Buttons -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-plus-circle"></i> Add to Plan
+                            </button>
+                            <a href="{% url 'meal_plan' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="card mt-3">
+                <div class="card-body text-center">
+                    <p class="text-muted mb-2">Don't have the recipe in your database?</p>
+                    <a href="{% url 'generate_meal_plan' %}" class="btn btn-success btn-sm">
+                        <i class="bi bi-magic"></i> Generate from API
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

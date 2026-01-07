@@ -41,7 +41,7 @@
                                     <div class="col-3">{{ log.weight }}</div>
                                     <div class="col-3">{{ log.notes }}</div>
                                     <div class="col-1">
-                                        <form method="POST" action="{% url 'delete_food_log' log.id %}"
+                                        <form method="POST" action="{% url 'delete_weight_log' log.id %}"
                                               style="display: inline;">
                                             {% csrf_token %}
                                             <button type="submit"
