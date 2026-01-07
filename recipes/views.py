@@ -296,4 +296,4 @@ def delete_planned_meal(request, meal_id: int):
         messages.error(request, 'Meal not found.')
         meal_date = date.today()
 
-    return redirect(f'/meal-plan/?week_start={meal_date.isoformat()}')
+    return redirect(f'/meal_plan/?week_start={meal_date.isoformat()}')

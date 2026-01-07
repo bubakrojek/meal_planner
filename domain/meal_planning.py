@@ -1,11 +1,13 @@
+import time
 from datetime import date, timedelta
 from functools import reduce
-from typing import List, Dict, Optional
-import time
+from typing import List, Dict, Optional, Any
+
 import requests
 from django.contrib.auth.models import User
+from django.db.models import QuerySet
 
-from domain.recipe_api import extract_nutrient_amount
+from domain.recipe_api import extract_nutrient_amount, extract_ingredients, aggregate_ingredients
 from recipes.models import PlannedMeal, FoodLog
 from users.models import DietaryPreferences
 
@@ -69,6 +71,7 @@ def extract_recipe_from_api_response(api_recipe: Dict) -> Dict:
         'carbohydrates': extract_nutrient_amount(api_recipe, 'Carbohydrates'),
         'fat': extract_nutrient_amount(api_recipe, 'Fat'),
         'servings': api_recipe.get('servings', 1),
+        'ingredients': extract_ingredients(api_recipe)
     }
 
 
@@ -79,9 +82,6 @@ def search_recipe_for_meal(
         api_key: str,
         number: int = 1
 ) -> List[Dict]:
-
-    print(f"   🌐 API call for {meal_type} (requesting {number} recipes)...")
-
     url = "https://api.spoonacular.com/recipes/complexSearch"
     meal_target = calculate_meal_target_macros(target_macros, meal_type)
 
@@ -107,7 +107,7 @@ def search_recipe_for_meal(
         response = requests.get(url, params=params, timeout=10)
         response.raise_for_status()
         results = response.json().get('results', [])
-        print(f"      API returned {len(results)} raw results")
+
         return list(map(extract_recipe_from_api_response, results))
 
 
@@ -143,6 +143,7 @@ def generate_daily_meal_plan(
         if recipes
     }
 
+
 def generate_weekly_meal_plan(
         start_date: date,
         target_macros: Dict,
@@ -152,8 +153,8 @@ def generate_weekly_meal_plan(
 ) -> List[Dict]:
     return list(map(
         lambda day_offset: {
-            'date':start_date+timedelta(day_offset),
-            'meals':generate_daily_meal_plan(
+            'date': start_date + timedelta(day_offset),
+            'meals': generate_daily_meal_plan(
                 target_macros,
                 preferences,
                 api_key,
@@ -171,7 +172,6 @@ def generate_weekly_meal_plan_optimized(
         api_key: str,
         meal_types: List[str] = None,
 ) -> List[Dict]:
-
     if meal_types is None:
         meal_types = ['breakfast', 'lunch', 'dinner']
 
@@ -187,16 +187,9 @@ def generate_weekly_meal_plan_optimized(
             number=7
         )
 
-        #recipes_by_type[meal_type] = recipes
-        print(f"   → Received {len(recipes)} recipes for {meal_type}")
-        if recipes:
-            print(f"   → First recipe: {recipes[0].get('title', 'Unknown')}")
+        # recipes_by_type[meal_type] = recipes
 
         recipes_by_type[meal_type] = recipes
-
-    print(f"\n📦 Recipes by type collected:")
-    for meal_type, recipes in recipes_by_type.items():
-        print(f"   {meal_type}: {len(recipes)} recipes")
 
     return list(map(
         lambda day_offset: {
@@ -210,16 +203,8 @@ def generate_weekly_meal_plan_optimized(
         range(7)
     ))
 
+
 def save_daily_plan_to_db(user: User, daily_plan: Dict, target_date: date):
-    print(f"      💾 save_daily_plan_to_db called")
-    print(f"         Date: {target_date}")
-    print(f"         Daily plan keys: {list(daily_plan.keys())}")
-    print(f"         Daily plan length: {len(daily_plan)}")
-
-    if not daily_plan:
-        print(f"         ⚠️ Empty daily plan!")
-        return 0
-
     planned_meals = list(map(
         lambda item: PlannedMeal(
             user=user,
@@ -231,6 +216,7 @@ def save_daily_plan_to_db(user: User, daily_plan: Dict, target_date: date):
             custom_protein=item[1]['protein'],
             custom_carbohydrates=item[1]['carbohydrates'],
             custom_fat=item[1]['fat'],
+            ingredients_snapshot=item[1]['ingredients'],
             servings=1,
         ),
         daily_plan.items()
@@ -244,7 +230,6 @@ def save_daily_plan_to_db(user: User, daily_plan: Dict, target_date: date):
                        'custom_carbohydrates', 'custom_fat', 'servings']
     )
 
-
     return len(planned_meals)
 
 
@@ -257,7 +242,7 @@ def save_weekly_plan_to_db(user, weekly_plan: List[Dict]):
         ),
         weekly_plan
     ))
-    print(f"\n✅ TOTAL SAVED: {total_saved} meals")
+
     return total_saved
 
 
@@ -272,11 +257,14 @@ def sum_daily_macros(meals: List[PlannedMeal]) -> Dict[str, float]:
         meals,
         {'calories': 0, 'protein': 0, 'carbohydrates': 0, 'fat': 0}
     )
+
+
 ###############################################
 def generate_date_range(start_date: date, days: int) -> List[date]:
     return [start_date + timedelta(days=i) for i in range(days)]
 
-def get_existing_meal_types(user:User,target_date:date)->List:
+
+def get_existing_meal_types(user: User, target_date: date) -> List:
     return list(
         PlannedMeal.objects.filter(
             user=user,
@@ -284,9 +272,10 @@ def get_existing_meal_types(user:User,target_date:date)->List:
         ).values_list('meal_type', flat=True)
     )
 
+
 def get_meal_types() -> List[str]:
-    return ['breakfast','dinner', 'supper']
-    #return ['breakfast', 'lunch', 'dinner', 'supper', 'snack']
+    return ['breakfast', 'dinner', 'supper']
+    # return ['breakfast', 'lunch', 'dinner', 'supper', 'snack']
 
 
 def group_by_date(planned_meals: List[PlannedMeal]) -> Dict[date, List]:
@@ -299,6 +288,7 @@ def group_by_date(planned_meals: List[PlannedMeal]) -> Dict[date, List]:
         {}
     )
 
+
 def group_by_type(planned_meals: List[PlannedMeal]) -> Dict[str, List]:
     return reduce(
         lambda acc, meal: {
@@ -308,6 +298,7 @@ def group_by_type(planned_meals: List[PlannedMeal]) -> Dict[str, List]:
         planned_meals,
         {}
     )
+
 
 def get_weekly_plan(user: User, start_date: date) -> List:
     end_date = start_date + timedelta(days=7)
@@ -324,7 +315,7 @@ def get_weekly_plan(user: User, start_date: date) -> List:
         lambda day_offset: {
             'date': start_date + timedelta(days=day_offset),
             'meals': grouped.get(start_date + timedelta(days=day_offset), []),
-            'meals_by_type':group_by_type(grouped.get(start_date + timedelta(days=day_offset), []),),
+            'meals_by_type': group_by_type(grouped.get(start_date + timedelta(days=day_offset), []), ),
             'total_macros': sum_daily_macros(
                 grouped.get(start_date + timedelta(days=day_offset), [])
             )
@@ -345,13 +336,13 @@ def copy_plan_to_food_logs(user, source_date: date):
             date=pm.date,
             meal_type=pm.meal_type,
             defaults={
-                'recipe':pm.recipe,
-                'custom_title':pm.custom_title,
-                'custom_calories':pm.custom_calories,
-                'custom_protein':pm.custom_protein,
-                'custom_carbohydrates':pm.custom_carbohydrates,
-                'custom_fat':pm.custom_fat,
-                'servings':pm.servings,
+                'recipe': pm.recipe,
+                'custom_title': pm.custom_title,
+                'custom_calories': pm.custom_calories,
+                'custom_protein': pm.custom_protein,
+                'custom_carbohydrates': pm.custom_carbohydrates,
+                'custom_fat': pm.custom_fat,
+                'servings': pm.servings,
             }
         ),
         planned_meals
@@ -359,3 +350,14 @@ def copy_plan_to_food_logs(user, source_date: date):
 
     return len(results)
 
+
+def get_ingredients_from_planned_meals(user: User, start_date: date, end_date: date) -> list[dict]:
+    snapshots = PlannedMeal.objects.filter(user=user, date__gte=start_date, date__lt=end_date).order_by('date',
+                                                                                                        'meal_type').values_list(
+        'ingredients_snapshot', flat=True)
+    return [snapshot for snapshot in snapshots if snapshot]
+
+def generate_shopping_list(user: User, start_date: date, end_date: date) -> Dict:
+    all_ingredients = get_ingredients_from_planned_meals(user, start_date, end_date)
+    aggregated = aggregate_ingredients(all_ingredients)
+    return dict(sorted(aggregated.items(), key=lambda x: x[1]['name']))

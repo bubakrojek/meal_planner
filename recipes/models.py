@@ -84,6 +84,7 @@ class PlannedMeal(models.Model):
 
     recipe = models.ForeignKey(Recipe, blank=True, null=True, on_delete=models.CASCADE)
 
+    ingredients_snapshot = models.JSONField(null=True,blank=True)
     custom_title = models.CharField(blank=True, null=True, max_length=300)
 
     custom_calories = models.DecimalField(blank=True, null=True, max_digits=6, decimal_places=2)
