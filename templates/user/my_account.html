@@ -10,10 +10,10 @@
                     <a class="nav-link" href="/food_logs/">
                         <i class="bi bi-grid"></i> Dashboard
                     </a>
-                    <a class="nav-link active bg-primary" href="/profile/">
+                    <a class="nav-link active bg-primary " href="/profile/">
                         <i class="bi bi-person"></i> My Account
                     </a>
-                    <a class="nav-link" href="/weight_logs/">
+                    <a class="nav-link" href="/show_weight_logs/">
                         <i class="bi bi-target"></i> Weight logs
                     </a>
                     <a class="nav-link" href="/settings/">
@@ -30,15 +30,15 @@
                             <h4 class="mt-2">{{ user.username }}</h4>
                         </div>
 
-                        <dl class="row mb-0 rounded">
+                        <dl class="row mb-0 ">
                             <dt class="col-sm-4">Email:</dt>
                             <dd class="col-sm-8">{{ user.email }}</dd>
 
                             <dt class="col-sm-4">Age:</dt>
                             <dd class="col-sm-8">{{ profile.age }}</dd>
 
-                            <dt class="col-sm-4">Tdee:</dt>
-                            <dd class="col-sm-8">{{ profile.tdee }}</dd>
+                            <dt class="col-sm-4">Latest weight:</dt>
+                            <dd class="col-sm-8">{{ latest_weight }}</dd>
 
                             <dt class="col-sm-4">Member since:</dt>
                             <dd class="col-sm-8">{{ user.date_joined|date:"F d, Y" }}</dd>
