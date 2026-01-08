@@ -10,6 +10,21 @@
 
 Meal Planner uses Spoonacular API to automatically generate personalized weekly meal plans based on your goals, dietary preferences, and macronutrient requirements. Built with Django.
 
+## Screenshots
+
+### Daily Food Log
+![Food Log Dashboard](screenshots/food_logs.png)
+*Track daily meals with real-time macro percentages*
+
+### Weekly Meal Plan
+![Meal Plan Calendar](screenshots/calendar.png)
+*Wekly meal plan from Spoonacular API*
+
+### Weight Progress
+![Weight Chart](screenshots/weight_logs.png)
+*Interactive weight tracking with Plotly.js*
+
+
 ## Features
 
 - Weekly meal plan generation (Spoonacular API)
