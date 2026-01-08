@@ -9,14 +9,14 @@ from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
-from domain import get_certain_food_log, get_day_macros, get_recipes, get_date, sum_day_macros, \
+from domain.food_log import get_certain_food_log, get_day_macros, get_recipes, get_date, sum_day_macros, \
     get_macroelements_percentages, create_recipe_from_food_log
-from domain import get_weekly_plan, get_meal_types, save_weekly_plan_to_db, \
+from domain.meal_planning import get_weekly_plan, get_meal_types, save_weekly_plan_to_db, \
     get_existing_meal_types, generate_daily_meal_plan, save_daily_plan_to_db, copy_plan_to_food_logs, \
     generate_weekly_meal_plan_optimized
-from domain import search_recipes_api
+from domain.recipe_api import search_recipes_api
 from recipes.forms import FoodLogForm
-from recipes import FoodLog, PlannedMeal
+from recipes.models import FoodLog, PlannedMeal
 
 
 # Create your views here.

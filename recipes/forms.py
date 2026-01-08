@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from recipes import FoodLog
+from recipes.models import FoodLog
 
 
 class FoodLogForm(forms.ModelForm):

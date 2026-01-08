@@ -7,8 +7,8 @@ import requests
 from django.contrib.auth.models import User
 from django.db.models import QuerySet
 
-from domain import extract_nutrient_amount, extract_ingredients, aggregate_ingredients
-from recipes import PlannedMeal, FoodLog
+from domain.recipe_api import extract_nutrient_amount, extract_ingredients, aggregate_ingredients
+from recipes.models import PlannedMeal, FoodLog
 from users.models import DietaryPreferences
 
 

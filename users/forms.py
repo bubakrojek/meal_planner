@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from users import UserProfile, DietaryPreferences, WeightLog
+from users.models import UserProfile, DietaryPreferences, WeightLog
 
 
 class SingUpForm(UserCreationForm):
@@ -31,7 +31,7 @@ class CompleteProfileForm(forms.ModelForm):
             }),
             'birth_date': forms.DateInput(attrs={
                 'type': 'text',
-                'onfocus':"(this.type='date')",
+                'onfocus': "(this.type='date')",
                 'class': 'form-control',
                 'placeholder': 'Birth Date',
                 'step': '0.01'
@@ -45,7 +45,7 @@ class CompleteProfileForm(forms.ModelForm):
             }),
             'goal_date': forms.DateInput(attrs={
                 'type': 'text',
-                'onfocus':"(this.type='date')",
+                'onfocus': "(this.type='date')",
                 'class': 'form-control',
                 'placeholder': 'Goal Date',
             }),
@@ -79,12 +79,13 @@ class CompleteDietaryPreferences(forms.ModelForm):
             'is_keto': 'Keto',
         }
 
+
 class AddWeightLog(forms.ModelForm):
     class Meta:
-        model=WeightLog
-        fields=['date','weight','notes']
-        widgets={
-            'date':forms.widgets.DateInput(
+        model = WeightLog
+        fields = ['date', 'weight', 'notes']
+        widgets = {
+            'date': forms.widgets.DateInput(
                 attrs={
                     'type': 'text',
                     'onfocus': "(this.type='date')",
@@ -92,12 +93,12 @@ class AddWeightLog(forms.ModelForm):
                     'placeholder': 'Log date',
                 }
             ),
-            'weight':forms.NumberInput(attrs={
+            'weight': forms.NumberInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Weight (kg)',
                 'step': '0.01'
             }),
-            'notes':forms.Textarea(attrs={
+            'notes': forms.Textarea(attrs={
                 'class': 'form-control',
                 'placeholder': 'Notes'
             })
