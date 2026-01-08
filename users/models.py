@@ -92,12 +92,12 @@ class UserProfile(models.Model):
 
     @property
     def bmr(self):
-        from domain import calculate_bmr
+        from domain.nutritions import calculate_bmr
         return calculate_bmr(self.gender, float(self.weight), self.height, self.age)
 
     @property
     def tdee(self):
-        from domain import calculate_tdee
+        from domain.nutritions import calculate_tdee
         return calculate_tdee(self.bmr, self.activity_level)
 
     @property
@@ -112,7 +112,7 @@ class UserProfile(models.Model):
             }
 
         else:
-            from domain import calculate_target_macros
+            from domain.nutritions import calculate_target_macros
             macroelements = calculate_target_macros(self.activity_level, float(self.weight),float(self.target_weight), (self.goal_date-self.created_at.date()).days,  self.bmr)
             macroelements_obj=Macronutrients.objects.create(
                 calories=macroelements['calories'],

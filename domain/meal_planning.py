@@ -90,12 +90,12 @@ def search_recipe_for_meal(
         'number': number,
         'addRecipeNutrition': True,
         'type': map_meal_type_to_api(meal_type),
-        'maxCalories': int(meal_target['calories'] * 1.5),
-        'minCalories': int(meal_target['calories'] * 0.5),
-        ''''maxProtein': int(meal_target['protein'] * 1.3),
+        'maxCalories': int(meal_target['calories'] * 1.2),
+        'minCalories': int(meal_target['calories'] * 0.8),
+        'maxProtein': int(meal_target['protein'] * 1.3),
         'minProtein': int(meal_target['protein'] * 0.7),
         'maxCarbs': int(meal_target['carbohydrates'] * 1.3),
-        'maxFat': int(meal_target['fat'] * 1.3),'''
+        'maxFat': int(meal_target['fat'] * 1.3),
         'sort': 'random',
     }
 
