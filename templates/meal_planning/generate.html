@@ -6,9 +6,8 @@
 <div class="container mt-4">
     <div class="row mb-4">
         <div class="col">
-            <h2><i class="bi bi-magic"></i> Auto-Generate Meal Plan</h2>
-            <p class="text-muted">Generate a personalized weekly meal plan based on your nutritional goals and dietary preferences.</p>
-        </div>
+            <h2> Auto-Generate Meal Plan</h2>
+            </div>
     </div>
 
     <div class="row">
@@ -16,7 +15,7 @@
         <div class="col-md-8">
             <div class="card shadow">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-gear"></i> Configuration</h5>
+                    <h5 class="mb-0"> Configuration</h5>
                 </div>
                 <div class="card-body">
                     <form method="POST">
@@ -41,7 +40,7 @@
                                                 <input class="form-check-input" type="checkbox" 
                                                        name="meal_types" value="breakfast" id="breakfast" checked>
                                                 <label class="form-check-label" for="breakfast">
-                                                    <i class="bi bi-sunrise"></i> <strong>Breakfast</strong>
+                                                     <strong>Breakfast</strong>
                                                     <br><small class="text-muted">~25% of daily calories</small>
                                                 </label>
                                             </div>
@@ -49,7 +48,7 @@
                                                 <input class="form-check-input" type="checkbox" 
                                                        name="meal_types" value="lunch" id="lunch" checked>
                                                 <label class="form-check-label" for="lunch">
-                                                    <i class="bi bi-sun"></i> <strong>Lunch</strong>
+                                                     <strong>Lunch</strong>
                                                     <br><small class="text-muted">~35% of daily calories</small>
                                                 </label>
                                             </div>
@@ -57,7 +56,7 @@
                                                 <input class="form-check-input" type="checkbox" 
                                                        name="meal_types" value="dinner" id="dinner" checked>
                                                 <label class="form-check-label" for="dinner">
-                                                    <i class="bi bi-moon-stars"></i> <strong>Dinner</strong>
+                                                     <strong>Dinner</strong>
                                                     <br><small class="text-muted">~30% of daily calories</small>
                                                 </label>
                                             </div>
@@ -67,7 +66,7 @@
                                                 <input class="form-check-input" type="checkbox" 
                                                        name="meal_types" value="supper" id="supper">
                                                 <label class="form-check-label" for="supper">
-                                                    <i class="bi bi-cup-hot"></i> <strong>Supper</strong>
+                                                    <strong>Supper</strong>
                                                     <br><small class="text-muted">~5% of daily calories</small>
                                                 </label>
                                             </div>
@@ -75,7 +74,7 @@
                                                 <input class="form-check-input" type="checkbox" 
                                                        name="meal_types" value="snack" id="snack">
                                                 <label class="form-check-label" for="snack">
-                                                    <i class="bi bi-cookie"></i> <strong>Snack</strong>
+                                                     <strong>Snack</strong>
                                                     <br><small class="text-muted">~5% of daily calories</small>
                                                 </label>
                                             </div>
@@ -84,17 +83,11 @@
                                 </div>
                             </div>
                         </div>
-                        
 
-                        <div class="alert alert-info">
-                            <i class="bi bi-info-circle"></i>
-                            <strong>Note:</strong> The generated plan will match your dietary preferences and target macros. 
-                            You can regenerate individual meals or the entire plan after generation.
-                        </div>
                         
 
                         <button type="submit" class="btn btn-primary btn-lg w-100">
-                            <i class="bi bi-magic"></i> Generate 7-Day Meal Plan
+                             Generate 7-Day Meal Plan
                         </button>
                     </form>
                 </div>
@@ -103,7 +96,7 @@
 
             <div class="text-center mt-3">
                 <a href="{% url 'meal_plan' %}" class="btn btn-outline-secondary">
-                    <i class="bi bi-calendar"></i> View Current Meal Plan
+                     View Current Meal Plan
                 </a>
             </div>
         </div>
@@ -113,24 +106,24 @@
 
             <div class="card shadow mb-3">
                 <div class="card-header bg-success text-white">
-                    <h6 class="mb-0"><i class="bi bi-bullseye"></i> Your Daily Targets</h6>
+                    <h6 class="mb-0"> Your Daily Targets</h6>
                 </div>
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span><i class="bi bi-fire text-danger"></i> Calories</span>
+                            <span><i class="text-danger"></i> Calories</span>
                             <strong class="badge bg-danger rounded-pill">{{ user_macros.calories|floatformat:0 }} kcal</strong>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span><i class="bi bi-egg text-warning"></i> Protein</span>
+                            <span><i class="text-warning"></i> Protein</span>
                             <strong class="badge bg-warning rounded-pill">{{ user_macros.protein|floatformat:0 }}g</strong>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span><i class="bi bi-droplet text-info"></i> Carbs</span>
+                            <span><i class="text-info"></i> Carbs</span>
                             <strong class="badge bg-info rounded-pill">{{ user_macros.carbohydrates|floatformat:0 }}g</strong>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span><i class="bi bi-moisture text-primary"></i> Fat</span>
+                            <span><i class="text-primary"></i> Fat</span>
                             <strong class="badge bg-primary rounded-pill">{{ user_macros.fat|floatformat:0 }}g</strong>
                         </li>
                     </ul>
@@ -140,40 +133,40 @@
 
             <div class="card shadow mb-3">
                 <div class="card-header bg-info text-white">
-                    <h6 class="mb-0"><i class="bi bi-heart"></i> Your Preferences</h6>
+                    <h6 class="mb-0"> Your Preferences</h6>
                 </div>
                 <div class="card-body">
                     {% if preferences.is_vegan or preferences.is_vegetarian or preferences.is_keto or preferences.is_gluten_free or preferences.is_dairy_free %}
                         <div class="d-flex flex-wrap gap-2">
                             {% if preferences.is_vegan %}
                             <span class="badge bg-success fs-6">
-                                <i class="bi bi-leaf"></i> Vegan
+                                 Vegan
                             </span>
                             {% endif %}
                             {% if preferences.is_vegetarian %}
                             <span class="badge bg-success fs-6">
-                                <i class="bi bi-flower1"></i> Vegetarian
+                                 Vegetarian
                             </span>
                             {% endif %}
                             {% if preferences.is_keto %}
                             <span class="badge bg-warning fs-6">
-                                <i class="bi bi-egg-fried"></i> Keto
+                                 Keto
                             </span>
                             {% endif %}
                             {% if preferences.is_gluten_free %}
                             <span class="badge bg-info fs-6">
-                                <i class="bi bi-x-circle"></i> Gluten-Free
+                                 Gluten-Free
                             </span>
                             {% endif %}
                             {% if preferences.is_dairy_free %}
                             <span class="badge bg-info fs-6">
-                                <i class="bi bi-slash-circle"></i> Dairy-Free
+                                 Dairy-Free
                             </span>
                             {% endif %}
                         </div>
                     {% else %}
                         <p class="text-muted mb-0">
-                            <i class="bi bi-check-circle"></i> No dietary restrictions
+                            No dietary restrictions
                         </p>
                     {% endif %}
 

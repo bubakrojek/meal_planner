@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from recipes.views import certain_food_log, add_food_log, delete_food_log, update_food_log, search_recipes_htmx, \
+from recipes import certain_food_log, add_food_log, delete_food_log, update_food_log, search_recipes_htmx, \
     weekly_meal_plan_view, generate_meal_plan, regenerate_day, execute_daily_plan
 from users.views import show_my_profile, register, sign_in, logout_view, complete_profile, complete_dietary_preferences, \
     add_weight_log, show_weight_logs, delete_weight_log, update_weight_log

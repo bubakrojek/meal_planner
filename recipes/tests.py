@@ -1,6 +1,6 @@
 from django.test import TestCase
-from domain.food_log import *
-from recipes.models import *
+from domain import *
+from recipes import *
 from django.contrib.auth.models import User
 # Create your tests here.
 
@@ -91,7 +91,7 @@ class GetDayMacrosTest(TestCase):
         )
 
     def test_get_day_macros(self):
-        from domain.food_log import get_day_macros
+        from domain import get_day_macros
         from datetime import date
         macros=get_day_macros(self.user,date=date.today())
         self.assertEqual(macros['calories'],2*600+1*200+2*300)

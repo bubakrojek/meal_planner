@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from users.models import UserProfile, DietaryPreferences, WeightLog
+from users import UserProfile, DietaryPreferences, WeightLog
 
 
 class SingUpForm(UserCreationForm):

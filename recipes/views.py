@@ -9,14 +9,14 @@ from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
-from domain.food_log import get_certain_food_log, get_day_macros, get_recipes, get_date, sum_day_macros, \
+from domain import get_certain_food_log, get_day_macros, get_recipes, get_date, sum_day_macros, \
     get_macroelements_percentages, create_recipe_from_food_log
-from domain.meal_planning import get_weekly_plan, get_meal_types, generate_weekly_meal_plan, save_weekly_plan_to_db, \
+from domain import get_weekly_plan, get_meal_types, save_weekly_plan_to_db, \
     get_existing_meal_types, generate_daily_meal_plan, save_daily_plan_to_db, copy_plan_to_food_logs, \
     generate_weekly_meal_plan_optimized
-from domain.recipe_api import search_recipes_api
+from domain import search_recipes_api
 from recipes.forms import FoodLogForm
-from recipes.models import FoodLog, Recipe, PlannedMeal
+from recipes import FoodLog, PlannedMeal
 
 
 # Create your views here.
@@ -114,10 +114,10 @@ def add_food_log(request: HttpRequest, date: str, meal_type: str) -> HttpRespons
             if recipe_source == 'custom':
                 create_recipe_from_food_log(
                     title=food_log.custom_title,
-                    calories=food_log.custom_calories,
-                    protein=food_log.custom_protein,
-                    carbohydrates=food_log.custom_carbohydrates,
-                    fat=food_log.custom_fat,
+                    calories=float(food_log.custom_calories),
+                    protein=float(food_log.custom_protein),
+                    carbohydrates=float(food_log.custom_carbohydrates),
+                    fat=float(food_log.custom_fat),
                     servings=food_log.servings,
                     user=request.user,
                 )
@@ -264,11 +264,12 @@ def weekly_meal_plan_view(request: HttpRequest) -> HttpResponse:
         'today': date.today()
     })
 
+
 @login_required
-def execute_daily_plan(request,date_str:str)->HttpResponse:
+def execute_daily_plan(request, date_str: str) -> HttpResponse:
     target_date = date.fromisoformat(date_str)
 
-    count=copy_plan_to_food_logs(request.user,target_date)
+    count = copy_plan_to_food_logs(request.user, target_date)
 
     if count > 0:
         messages.success(
@@ -280,7 +281,6 @@ def execute_daily_plan(request,date_str:str)->HttpResponse:
             request,
             f'No meals found in the plan for {target_date.strftime("%B %d, %Y")}.'
         )
-
 
     return redirect(f'/food_logs/?date={date_str}')
 

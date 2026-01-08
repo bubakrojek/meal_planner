@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="container-fluid mt-4">
-    <!-- Header -->
+
     <div class="row mb-4">
         <div class="col-md-6">
             <h2><i class="bi bi-calendar3"></i> Weekly Meal Plan</h2>
@@ -13,7 +13,7 @@
             </p>
         </div>
         <div class="col-md-6 text-end">
-            <!-- Navigation -->
+
             <div class="btn-group me-2" role="group">
                 <a href="?week_start={{ prev_week|date:'Y-m-d' }}" class="btn btn-outline-primary">
                     <i class="bi bi-chevron-left"></i> Previous
@@ -26,16 +26,16 @@
                 </a>
             </div>
 
-            <!-- Actions -->
+
             <div class="btn-group" role="group">
                 <a href="{% url 'generate_meal_plan' %}" class="btn btn-success">
-                    <i class="bi bi-magic"></i> Generate Plan
+                    Generate Plan
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- Weekly Calendar -->
+
     {% for day in weekly_plan %}
     <div class="card shadow-sm mb-3">
         <div class="card-header" style="background-color: {% cycle '#e3f2fd' '#f3e5f5' '#fff3e0' '#e8f5e9' '#fce4ec' '#e0f2f1' '#f1f8e9' %};">
@@ -53,7 +53,7 @@
                     {% if day.meals %}
 
 
-                    <!-- Day Actions -->
+
                     <a href="{% url 'regenerate_day' date_str=day.date|date:'Y-m-d' %}"
                        class="btn btn-sm btn-warning"
                        onclick="return confirm('Regenerate all meals for this day?')">
@@ -73,7 +73,7 @@
 
         <div class="card-body">
             <div class="row g-3">
-                <!-- Breakfast -->
+
                 <div class="col-md-2">
                     <div class="meal-column">
                         <h6 class="text-center mb-3">
@@ -101,7 +101,6 @@
                     </div>
                 </div>
 
-                <!-- Lunch -->
                 <div class="col-md-2">
                     <div class="meal-column">
                         <h6 class="text-center mb-3">
@@ -130,7 +129,7 @@
                     </div>
                 </div>
 
-                <!-- Dinner -->
+
                 <div class="col-md-2">
                     <div class="meal-column">
                         <h6 class="text-center mb-3">
@@ -159,7 +158,7 @@
                     </div>
                 </div>
 
-                <!-- Supper -->
+
                 <div class="col-md-2">
                     <div class="meal-column">
                         <h6 class="text-center mb-3">
@@ -188,7 +187,7 @@
                     </div>
                 </div>
 
-                <!-- Snack -->
+
                 <div class="col-md-2">
                     <div class="meal-column">
                         <h6 class="text-center mb-3">
@@ -253,21 +252,14 @@
     <a href="{% url 'generate_meal_plan' %}?start_date={{ start_date|date:'Y-m-d' }}"
        class="btn btn-success btn-lg"
        onclick="return confirm('Generate meals for this week? Existing meals will be replaced.')">
-        <i class="bi bi-magic"></i>
+
         {% if weekly_plan.0.meals %}Regenerate{% else %}Generate{% endif %} Week
     </a>
 </div>
 </div>
 
 <style>
-.meal-card {
-    transition: transform 0.2s, box-shadow 0.2s;
-}
 
-.meal-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
 
 .meal-column {
     min-height: 150px;

@@ -3,7 +3,7 @@ from functools import reduce
 
 from django.contrib.auth.models import User
 
-from recipes.models import Recipe, FoodLog, MealType
+from recipes import Recipe, FoodLog, MealType
 
 
 def val(custom, original):

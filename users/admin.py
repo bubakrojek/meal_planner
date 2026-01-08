@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserProfile, WeightLog, Macronutrients, DietaryPreferences
+from users.models import UserProfile, WeightLog, Macronutrients, DietaryPreferences
 
 # Register your models here.
 
