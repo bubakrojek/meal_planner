@@ -22,6 +22,7 @@ from recipes.models import FoodLog, PlannedMeal
 # Create your views here.
 
 
+
 @login_required
 def certain_food_log(request: HttpRequest) -> HttpResponse:
     date_str = request.GET.get('date')
